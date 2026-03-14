@@ -18,6 +18,6 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		io.Copy(c, c)
+		go io.Copy(c, c)
 	}
 }
