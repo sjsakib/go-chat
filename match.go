@@ -1,16 +1,27 @@
 package main
 
 import (
+	"fmt"
 	"io"
-	"net"
 )
-var partner net.Conn
+var partner io.ReadWriteCloser
 
-func match(c net.Conn) {
+func match(c io.ReadWriteCloser) {
+	errCh := make(chan error, 1)
 	if partner != nil {
-		go io.Copy(partner, c)
-		go io.Copy(c, partner)
+		cPartner := partner
 		partner = nil
+		
+		go copy(cPartner, c, errCh)
+		go copy(c, cPartner, errCh)
+
+		if err := <-errCh; err != nil {
+			fmt.Println(err)
+		}
+		cPartner.Close()
+		c.Close()
+
+		return
 	}
 	partner = c
 }
