@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"log"
 	"net"
 )
@@ -18,6 +17,6 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		go io.Copy(c, c)
+		match(c)
 	}
 }
