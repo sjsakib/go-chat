@@ -20,8 +20,8 @@ func match(c io.ReadWriteCloser) {
 }
 
 func chat(c1, c2 io.ReadWriteCloser) {
-	fmt.Fprintf(c1, "Found match!")
-	fmt.Fprintf(c2, "Found match!")
+	fmt.Fprintf(c1, "Found match!\n")
+	fmt.Fprintf(c2, "Found match!\n")
 	errCh := make(chan error, 1)
 	go copy(c1, c2, errCh)
 	go copy(c2, c1, errCh)

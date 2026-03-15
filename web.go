@@ -44,7 +44,7 @@ var rootTemplate = template.Must(template.New("root").Parse(`
     document.getElementById("form").addEventListener("submit", onSend);
     function onSend(event) {
         event.preventDefault();
-        websocket.send(input.value);
+        websocket.send(input.value + '\n');
         appendMessage(input.value);
         input.value = '';
     }
