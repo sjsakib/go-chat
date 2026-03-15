@@ -3,25 +3,32 @@ package main
 import (
 	"fmt"
 	"io"
+	"time"
 )
-var partner io.ReadWriteCloser
+
+var partnerCh = make(chan io.ReadWriteCloser)
 
 func match(c io.ReadWriteCloser) {
-	errCh := make(chan error, 1)
-	if partner != nil {
-		cPartner := partner
-		partner = nil
-		
-		go copy(cPartner, c, errCh)
-		go copy(c, cPartner, errCh)
-
-		if err := <-errCh; err != nil {
-			fmt.Println(err)
-		}
-		cPartner.Close()
-		c.Close()
-
-		return
+	select {
+	case partner := <-partnerCh:
+		chat(c, partner)
+	case partnerCh <- c:
+	case <-time.After(5 * time.Second):
+		chat(Bot(), c)
 	}
-	partner = c
+
+}
+
+func chat(c1, c2 io.ReadWriteCloser) {
+	fmt.Fprintf(c1, "Found match!")
+	fmt.Fprintf(c2, "Found match!")
+	errCh := make(chan error, 1)
+	go copy(c1, c2, errCh)
+	go copy(c2, c1, errCh)
+
+	if err := <-errCh; err != nil {
+		fmt.Println(err)
+	}
+	c1.Close()
+	c2.Close()
 }
