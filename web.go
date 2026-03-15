@@ -8,17 +8,19 @@ import (
 	"golang.org/x/net/websocket"
 )
 
+const webListenAddr = "localhost:3000"
+
 func runWeb() {
 	http.HandleFunc("/", rootHandler)
 	http.Handle("/socket", websocket.Handler(socketHandler))
-	err := http.ListenAndServe(listenAddr, nil)
+	err := http.ListenAndServe(webListenAddr, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
-	err := rootTemplate.Execute(w, listenAddr)
+	err := rootTemplate.Execute(w, webListenAddr)
 	if err != nil {
 		log.Fatal(err)
 	}

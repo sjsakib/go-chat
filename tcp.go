@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 )
@@ -17,6 +18,7 @@ func runTcp() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		match(c)
+		fmt.Println("Got connection")
+		go match(c)
 	}
 }
